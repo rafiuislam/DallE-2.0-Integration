@@ -1,8 +1,10 @@
 import express from "express";
-import * as dotenv from "dotenv";
 import cors from "cors";
+import * as dotenv from "dotenv";
 
 import connectDB from "./db/connect.js";
+import postRoutes from "./routes/post.js";
+import dalleRoutes from "./routes/dalle.js";
 
 dotenv.config();
 
@@ -17,6 +19,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "50mb" }));
+
+app.use("/api/v1/post", postRoutes);
+app.use("/api/v1/dalle", dalleRoutes);
 
 const connection = async () => {
   try {
