@@ -2,6 +2,7 @@
 import { reactive, ref } from "vue";
 import { preview } from "../assets";
 import Loader from "../components/Loader.vue";
+import { getRandomPrompts } from "../utils/prompt";
 
 const form = reactive({
   name: "",
@@ -11,6 +12,34 @@ const form = reactive({
 
 const loading = ref(false);
 const generatingImg = ref(false);
+
+const generatePrompts = () => {
+  const randomPrompts = getRandomPrompts("");
+  form.prompt = randomPrompts;
+};
+
+const generateImage = async () => {
+  if (form.prompt) {
+    try {
+      generatingImg.value = true;
+      const response = await fetch("http://localhost:8000/api/v1/dalle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: form.prompt,
+        }),
+      });
+      const data = await response.json();
+      form.photo = `data:image/jpeg;base64,${data.photo}`;
+    } catch (error) {
+      alert(error);
+    } finally {
+      generatingImg.value = false;
+    }
+  }
+};
 </script>
 
 <template>
@@ -40,7 +69,7 @@ const generatingImg = ref(false);
         <div class="input-wrapper">
           <div class="label-container">
             <label for="prompt">Prompt</label>
-            <button type="button">Surprise Me</button>
+            <button type="button" @click="generatePrompts">Surprise Me</button>
           </div>
           <input
             type="text"
@@ -59,12 +88,15 @@ const generatingImg = ref(false);
             class="img"
           />
           <img :src="preview" v-else alt="Preview" class="preview" />
-          <div v-if="loading" class="load flex justify-center items-center">
+          <div
+            v-if="generatingImg"
+            class="load flex justify-center items-center"
+          >
             <Loader />
           </div>
         </div>
         <div class="generate-btn flex">
-          <button type="button">
+          <button type="button" @click="generateImage">
             {{ generatingImg ? "Generating.." : "Generate" }}
           </button>
         </div>
