@@ -36,13 +36,17 @@ router.route("/").get(async (req, res) => {
 router.route("/").post(async (req, res) => {
   try {
     const { name, prompt, photo } = req.body;
-    const photoUrl = await cloudlinary.uploader.upload(photo);
+    const photoUrl = await cloudinary.uploader.upload(photo);
 
     // saving data received from mongo database
     const newPost = await Post.create({
       name,
       prompt,
       photo: photoUrl.url,
+    });
+    res.status(200).json({
+      success: true,
+      data: newPost,
     });
   } catch (error) {
     console.log(error);

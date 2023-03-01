@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from "vue";
+import Loader from "../components/Loader.vue";
 
 const searchText = ref("");
+const loading = ref(false);
 </script>
 
 <template>
@@ -26,6 +28,16 @@ const searchText = ref("");
           v-model="searchText"
           required
         />
+      </div>
+    </div>
+    <div class="mt-10">
+      <div class="flex justify-center items-center" v-if="loading">
+        <Loader />
+      </div>
+      <div v-else>
+        <h2 v-if="searchText">
+          Showing Results for <span>{{ searchText }}</span>
+        </h2>
       </div>
     </div>
   </section>

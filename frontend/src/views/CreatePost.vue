@@ -3,6 +3,9 @@ import { reactive, ref } from "vue";
 import { preview } from "../assets";
 import Loader from "../components/Loader.vue";
 import { getRandomPrompts } from "../utils/prompt";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const form = reactive({
   name: "",
@@ -40,6 +43,31 @@ const generateImage = async () => {
     }
   }
 };
+
+const handleSubmit = async () => {
+  if (form.prompt && form.photo) {
+    try {
+      loading.value = true;
+      const response = await fetch("http://localhost:8000/api/v1/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          prompt: form.prompt,
+          photo: form.photo,
+        }),
+      });
+      await response.json();
+      router.push({ name: "Home" });
+    } catch (error) {
+      alert(error);
+    } finally {
+      loading.value = false;
+    }
+  }
+};
 </script>
 
 <template>
@@ -51,7 +79,7 @@ const generateImage = async () => {
         Community
       </p>
     </div>
-    <form action="">
+    <form action="" @submit.prevent="handleSubmit">
       <div class="flex">
         <div class="input-wrapper">
           <div class="label-container">
