@@ -1,6 +1,10 @@
 <script setup>
 import { download } from "../assets";
-import { downloadImage } from "../utils/prompt";
+import FileSaver from "file-saver";
+
+async function downloadImage(id, photo) {
+  FileSaver.saveAs(photo, `download-${id}.jpg`);
+}
 
 defineProps({
   post: {
