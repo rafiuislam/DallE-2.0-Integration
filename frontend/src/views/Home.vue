@@ -1,9 +1,53 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
 import Loader from "../components/Loader.vue";
+import Card from "../components/Card.vue";
 
 const searchText = ref("");
 const loading = ref(false);
+const allPosts = ref([]);
+const title = ref("");
+
+const fetchPosts = async () => {
+  try {
+    loading.value = true;
+    const response = await fetch("http://localhost:8000/api/v1/post", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    allPosts.value = result.data.reverse();
+    if (result.data.length === 0) {
+      title.value = "No Posts yet";
+    }
+  } catch (error) {
+    alert(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const filteredPosts = computed(() => {
+  if (searchText.value === 0) {
+    return allPosts.value;
+  } else {
+    const result = allPosts.value.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchText.value.toLowerCase()) ||
+        item.prompt.toLowerCase().includes(searchText.value.toLowerCase())
+    );
+    if (result.length === 0) {
+      title.value = "No Posts yet";
+    }
+    return result;
+  }
+});
+
+onMounted(async () => {
+  await fetchPosts();
+});
 </script>
 
 <template>
@@ -38,6 +82,14 @@ const loading = ref(false);
         <h2 v-if="searchText">
           Showing Results for <span>{{ searchText }}</span>
         </h2>
+        <div class="cards-wrapper">
+          <template v-if="filteredPosts?.length > 0">
+            <Card v-for="(post, id) in filteredPosts" :post="post" :key="id" />
+          </template>
+          <h2 v-else class="title">
+            {{ title }}
+          </h2>
+        </div>
       </div>
     </div>
   </section>
