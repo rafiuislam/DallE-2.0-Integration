@@ -8,6 +8,7 @@ const loading = ref(false);
 const allPosts = ref([]);
 const title = ref("");
 
+// get all posts from backend server and mongodb
 const fetchPosts = async () => {
   try {
     loading.value = true;
@@ -29,6 +30,7 @@ const fetchPosts = async () => {
   }
 };
 
+// dynamic search filter
 const filteredPosts = computed(() => {
   if (searchText.value === 0) {
     return allPosts.value;
@@ -84,7 +86,7 @@ onMounted(async () => {
         </h2>
         <div class="cards-wrapper">
           <template v-if="filteredPosts?.length > 0">
-            <Card v-for="(post, id) in filteredPosts" :post="post" :key="id" />
+            <Card v-for="(post, i) in filteredPosts" :post="post" :key="i" />
           </template>
           <h2 v-else class="title">
             {{ title }}

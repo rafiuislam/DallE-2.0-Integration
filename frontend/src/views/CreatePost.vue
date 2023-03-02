@@ -21,6 +21,7 @@ const generatePrompts = () => {
   form.prompt = randomPrompts;
 };
 
+// generating image from dalle from backend
 const generateImage = async () => {
   if (form.prompt) {
     try {
@@ -44,6 +45,7 @@ const generateImage = async () => {
   }
 };
 
+// sending data to backend server and thereby to cloudinary & mongodb
 const handleSubmit = async () => {
   if (form.prompt && form.photo) {
     try {
@@ -129,13 +131,13 @@ const handleSubmit = async () => {
           </button>
         </div>
         <div class="sharing-btn">
+          <button type="submit">
+            {{ loading ? "Sharing.." : "Share with the community" }}
+          </button>
           <p>
             ** Once you have created the image you want, you can share it with
             others in the community **
           </p>
-          <button type="submit">
-            {{ loading ? "Sharing.." : "Share with the community" }}
-          </button>
         </div>
       </div>
     </form>

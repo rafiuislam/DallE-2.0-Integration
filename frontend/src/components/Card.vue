@@ -2,8 +2,8 @@
 import { download } from "../assets";
 import FileSaver from "file-saver";
 
-async function downloadImage(id, photo) {
-  FileSaver.saveAs(photo, `download-${id}.jpg`);
+async function downloadImage(_id, photo) {
+  FileSaver.saveAs(photo, `download-${_id}.jpg`);
 }
 
 defineProps({
@@ -31,7 +31,7 @@ defineProps({
           </div>
           <p>{{ post.name }}</p>
         </div>
-        <button @click="downloadImage(post.id, post.photo)">
+        <button @click="downloadImage(post._id, post.photo)">
           <img :src="download" alt="downloadImg" />
         </button>
       </div>
